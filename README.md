@@ -42,11 +42,13 @@ zero on geometric fibres. [Basic.lean](ArithmeticOfJacobiPolynomials/Geometry/Ja
   [External.lean](ArithmeticOfJacobiPolynomials/External.lean#L204)
 - Theorem 1.1 and the Kaneko–Zagier case of Corollary 6.6 assume the manuscript's finite-range
   computations in Proposition B.2. [External.lean](ArithmeticOfJacobiPolynomials/External.lean#L1219)
-- Theorem 1.1 and the Kaneko–Zagier case of Corollary 6.6 also use the published Magma
-  computations of Cullinan and Hajir: irreducibility of the Kaneko–Zagier lifts through index
-  10^5 [External.lean](ArithmeticOfJacobiPolynomials/External.lean#L388) and symmetric Galois
-  group of the irreducible lifts through index 10^9
-  [External.lean](ArithmeticOfJacobiPolynomials/External.lean#L588).
+- Theorem 1.1 and the Kaneko–Zagier case of Corollary 6.6 also use two computations of
+  Cullinan and Hajir. They used Magma to check irreducibility through modular index
+  `10^5`. For the symmetric Galois group conditional on irreducibility through modular
+  index `10^9`, they used PARI/GP to find prime pairs and Magma for the remaining small cases.
+  See [Remark 4.6 and Theorem 1.8](https://doi.org/10.1090/proc/13212) and the
+  [irreducibility](ArithmeticOfJacobiPolynomials/External.lean#L388) and
+  [Galois](ArithmeticOfJacobiPolynomials/External.lean#L588) inputs.
 - Theorem 1.5 and the Legendre clause of Corollary 6.2 assume the integer inequalities and
   factor-degree checks computed in Lemma C.2.
   [External.lean](ArithmeticOfJacobiPolynomials/External.lean#L1230-L1255)
@@ -55,8 +57,16 @@ zero on geometric fibres. [Basic.lean](ArithmeticOfJacobiPolynomials/Geometry/Ja
   Chebyshev function.
   [External.lean](ArithmeticOfJacobiPolynomials/External.lean)
 
-The computations in Proposition B.2 and Lemma C.2 were independently recomputed over their full
-ranges. The Lean proofs take their outputs as explicit hypotheses.
+The Lean proofs take the finite computations in Proposition B.2 and Lemma C.2 as explicit
+hypotheses. The following scripts reproduce them independently over their full ranges.
+
+- Run `python3 verification/appendix_b.py` with Python 3.10 or later. It checks all 966,672
+  parameter-degree pairs using outward-rounded integer bounds for logarithms.
+  [Appendix B script](verification/appendix_b.py)
+- Run `python3 verification/appendix_c.py` with [python-flint](https://pypi.org/project/python-flint/)
+  installed (tested with 0.9.0). It checks 318 integer inequalities and the 80 remaining
+  polynomials by 254 degree-eliminating reductions. The largest prime used is 317.
+  [Appendix C script](verification/appendix_c.py)
 
 ## Hypotheses made explicit
 
