@@ -37,22 +37,14 @@ theorem irreducible_of_frobenius_tests {k : Type*} [Field k] [Finite k] {f : k[X
   exact False.elim (hg.not_isUnit ((htest q hq hqdiv).isUnit_of_dvd' hgdiv
     (hg.natDegree_dvd_iff_dvd_X_pow_card_pow_sub_X.mp hgd)))
 
-/-- Passing the Frobenius tests at a single prime proves rational irreducibility.
-The leading-degree equality makes the statement applicable to the nonmonic polynomials
-in Appendix C. -/
-theorem irreducible_of_frobenius_reduction (H : ℤ[X]) (hprim : H.IsPrimitive)
+/-- A degree-preserving irreducible reduction of a primitive integer polynomial proves
+irreducibility over the rationals. -/
+theorem irreducible_of_irreducible_reduction (H : ℤ[X]) (hprim : H.IsPrimitive)
     (p : ℕ) [Fact p.Prime] (hD : 0 < H.natDegree)
     (hdeg : (H.map (Int.castRingHom (ZMod p))).natDegree = H.natDegree)
-    (hall : H.map (Int.castRingHom (ZMod p)) ∣ X ^ p ^ H.natDegree - X)
-    (htest : ∀ q : ℕ, q.Prime → q ∣ H.natDegree →
-      IsCoprime (H.map (Int.castRingHom (ZMod p))) (X ^ p ^ (H.natDegree / q) - X)) :
+    (hbar : Irreducible (H.map (Int.castRingHom (ZMod p)))) :
     Irreducible (H.map (Int.castRingHom ℚ)) := by
   let φ := Int.castRingHom (ZMod p)
-  have hbar : Irreducible (H.map φ) := by
-    apply irreducible_of_frobenius_tests
-    · exact hdeg.symm ▸ hD
-    · simpa [φ, hdeg, Nat.card_eq_fintype_card, ZMod.card] using hall
-    · simpa [φ, hdeg, Nat.card_eq_fintype_card, ZMod.card] using htest
   by_contra hred
   obtain ⟨A, B, he, hA1, hA2⟩ := exists_factor_of_not_irreducible H hprim hD hred
   have hlc : φ H.leadingCoeff ≠ 0 := by
@@ -76,5 +68,23 @@ theorem irreducible_of_frobenius_reduction (H : ℤ[X]) (hprim : H.IsPrimitive)
     omega
   · have := natDegree_eq_zero_of_isUnit h
     omega
+
+/-- Passing the Frobenius tests at a single prime proves rational irreducibility.
+The leading-degree equality makes the statement applicable to the nonmonic polynomials
+in Appendix C. -/
+theorem irreducible_of_frobenius_reduction (H : ℤ[X]) (hprim : H.IsPrimitive)
+    (p : ℕ) [Fact p.Prime] (hD : 0 < H.natDegree)
+    (hdeg : (H.map (Int.castRingHom (ZMod p))).natDegree = H.natDegree)
+    (hall : H.map (Int.castRingHom (ZMod p)) ∣ X ^ p ^ H.natDegree - X)
+    (htest : ∀ q : ℕ, q.Prime → q ∣ H.natDegree →
+      IsCoprime (H.map (Int.castRingHom (ZMod p))) (X ^ p ^ (H.natDegree / q) - X)) :
+    Irreducible (H.map (Int.castRingHom ℚ)) := by
+  let φ := Int.castRingHom (ZMod p)
+  have hbar : Irreducible (H.map φ) := by
+    apply irreducible_of_frobenius_tests
+    · exact hdeg.symm ▸ hD
+    · simpa [φ, hdeg, Nat.card_eq_fintype_card, ZMod.card] using hall
+    · simpa [φ, hdeg, Nat.card_eq_fintype_card, ZMod.card] using htest
+  exact irreducible_of_irreducible_reduction H hprim p hD hdeg hbar
 
 end ArithmeticOfJacobiPolynomials

@@ -157,8 +157,9 @@ def main():
             used.append(p)
         assert not candidates, (delta, m, candidates)
     assert (len(witnesses), len(used), max(used)) == (80, 254, 317)
-    print('Verified 254 reductions (largest prime 317) and one irreducible '
-          'reduction for each of the 80 polynomials (largest prime 2311).')
+    largest_witness = max(witness for witness, _ in witnesses.values())
+    print(f'Verified {len(used)} reductions (largest prime {max(used)}) and one irreducible '
+          f'reduction for each of the {len(witnesses)} polynomials (largest prime {largest_witness}).')
 
 
 if __name__ == '__main__':

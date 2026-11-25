@@ -136,7 +136,8 @@ public import ArithmeticOfJacobiPolynomials.Remarks.Chebyshev
 public import ArithmeticOfJacobiPolynomials.Remarks.ChebyshevCyclotomicField
 public import ArithmeticOfJacobiPolynomials.Remarks.ChebyshevKinds
 public import ArithmeticOfJacobiPolynomials.Remarks.DerivativeOrders
-public import ArithmeticOfJacobiPolynomials.Verification.Legendre
+public import ArithmeticOfJacobiPolynomials.Verification.ModFourInterval
+public import ArithmeticOfJacobiPolynomials.Verification.DerivativeAll
 public import ArithmeticOfJacobiPolynomials.Remarks.Examples
 public import ArithmeticOfJacobiPolynomials.Remarks.LocalEdges
 public import ArithmeticOfJacobiPolynomials.Remarks.Modular
