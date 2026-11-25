@@ -58,9 +58,9 @@ def level_weights(p, a, b, residue):
     return m, m + e
 
 
-def first_level_totals(lam, mu, log_upper):
+def first_level_totals(lam, mu, log_upper, high):
     """Upper bound for SCALE*T_0(n), using residue intervals and a difference array."""
-    changes = [0] * (HIGH + 2)
+    changes = [0] * (high + 2)
     for p, logp in log_upper.items():
         a = lam * pow(3, -1, p) % p
         b = (p + mu) // 2
@@ -70,22 +70,22 @@ def first_level_totals(lam, mu, log_upper):
             first, later = level_weights(p, a, b, left)
             # For n<p only m contributes. A nonzero m requires n+b>=p,
             # so p<=2n+1; in particular p<=12n+5, as in the defining sum.
-            if first and left <= HIGH:
+            if first and left <= high:
                 changes[left] += logp
-                changes[min(right, HIGH + 1)] -= logp
+                changes[min(right, high + 1)] -= logp
             if later:
-                for start in range(p + left, HIGH + 1, p):
+                for start in range(p + left, high + 1, p):
                     changes[start] += logp
-                    changes[min(start + right - left, HIGH + 1)] -= logp
+                    changes[min(start + right - left, high + 1)] -= logp
     return list(accumulate(changes))
 
 
-def prime_power_totals(log_upper):
+def prime_power_totals(log_upper, high):
     """Upper bound for SCALE*Q(n). A prime power enters at ceil((p^h-5)/12)."""
-    changes = [0] * (HIGH + 1)
+    changes = [0] * (high + 1)
     for p, logp in log_upper.items():
         power = p*p
-        while power <= 12*HIGH + 5:
+        while power <= 12*high + 5:
             changes[max(0, ceil_div(power - 5, 12))] += logp
             power *= p
     return list(accumulate(changes))
@@ -99,8 +99,8 @@ def valuation(k, p):
     return v
 
 
-def verify(lam, mu, log_upper, higher, ternary_sums):
-    first = first_level_totals(lam, mu, log_upper)
+def verify(lam, mu, log_upper, higher, ternary_sums, low, high):
+    first = first_level_totals(lam, mu, log_upper, high)
     delta = (mu + 1) // 2
     l2, u2 = LOG_TWO
     l3, u3 = scaled_log(3)
@@ -109,10 +109,10 @@ def verify(lam, mu, log_upper, higher, ternary_sums):
     worst_delta = None
     worst_gap = (0, 1)
     count = 0
-    for n in range(1, HIGH + 1):
+    for n in range(1, high + 1):
         d2 += 1 + valuation(3*n + lam, 2)
         d3 += 1 + valuation(2*n + mu, 3)
-        if n < LOW:
+        if n < low:
             continue
         count += 1
         gap = max(d2*u2 - d3*l3, d3*u3 - d2*l2)
@@ -135,21 +135,21 @@ def verify(lam, mu, log_upper, higher, ternary_sums):
           f'endpoint gap/n <= {ceil_div(10**6 * gap, SCALE*n1)}/1000000')
 
 
-def main():
+def verify_range(low=LOW, high=HIGH):
     # For p>n a nonzero first-level contribution requires p<=2n+1.
     # Every prime contributing to Q has p^2<=12n+5.
-    cap = max(2*HIGH + 1, isqrt(12*HIGH + 5))
+    cap = max(2*high + 1, isqrt(12*high + 5))
     log_upper = {p: scaled_log(p)[1] for p in primes_through(cap) if p >= 5}
-    higher = prime_power_totals(log_upper)
-    ternary_sums = [0] * (2*HIGH + 2)
+    higher = prime_power_totals(log_upper, high)
+    ternary_sums = [0] * (2*high + 2)
     for n in range(1, len(ternary_sums)):
         ternary_sums[n] = ternary_sums[n // 3] + n % 3
     for lam in (-1, 1):
         for mu in (-1, 1):
-            verify(lam, mu, log_upper, higher, ternary_sums)
+            verify(lam, mu, log_upper, higher, ternary_sums, low, high)
 
 
 if __name__ == '__main__':
     if not __debug__:
         raise SystemExit('Run without -O so that all inequalities are checked.')
-    main()
+    verify_range()
