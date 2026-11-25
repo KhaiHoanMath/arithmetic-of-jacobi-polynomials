@@ -1,6 +1,8 @@
 # Arithmetic of Jacobi polynomials
 
-Lean proofs and verification programs for *Arithmetic of Jacobi polynomials* by Khai-Hoan Nguyen-Dang. AxiomProver assembled the original formalization. The supplementary proofs and computations accompany the revised manuscript. [Original preprint, October 2026](https://hexagonmath.org/2610.00468v1)
+Lean proofs and verification programs for *Arithmetic of Jacobi polynomials* by Khai-Hoan Nguyen-Dang. [Revised manuscript (PDF)](arithmetic_of_jacobi_polynomials.pdf)
+
+The AxiomProver team supplied the original Lean formalization and identified two missing hypotheses in the preprint. The author is especially grateful to Ken Ono for sharing the formalization and pointing out the team's corrections. For the revision, the author added the supplementary Lean proofs for Legendre polynomials and their first derivatives, the finite certificates, and the independent verification programs. [Original AxiomProver formalization](https://github.com/KhaiHoanMath/arithmetic-of-jacobi-polynomials/tree/5adf9486721d39ff62f6f4e5e38bce2f862c9f01)
 
 The theorem table below identifies the public declarations. Their types give the mathematical hypotheses. The [verification guide](verification/README.md) covers the finite ranges, the certificates and the commands for reproducing them.
 
@@ -26,12 +28,6 @@ Declaration names below are in namespace `ArithmeticOfJacobiPolynomials`.
 | Corollary 6.6: hyperelliptic Jacobians and their powers for every degree `d ≥ 9` with symmetric Galois group | `JacobianSetting.arithmeticConclusions`, `exists_jacobianSetting_arithmeticConclusions_realized` |
 | Theorem A.1: local irreducibility over `ℚ₃` | `kanekoZagier_localIrreducibility_of_newton` |
 
-Question 6.7 is stated as an open question, as in the paper.
-
-Corollary 6.6 applies to separable polynomials of even or odd degree in the stated range, including
-curves without a rational point. The Jacobian represents the part of the Picard sheaf of degree
-zero on geometric fibres. [Basic.lean](ArithmeticOfJacobiPolynomials/Geometry/Jacobian/Basic.lean)
-
 ## What the Lean proofs use
 
 | Manuscript result | Proof and remaining inputs |
@@ -41,30 +37,6 @@ zero on geometric fibres. [Basic.lean](ArithmeticOfJacobiPolynomials/Geometry/Ja
 | First derivatives (last two assertions of Theorem 1.5) and the Legendre clause of Corollary 6.2 | Lean checks the 318 integer inequalities. Of the 80 exceptional polynomials, 45 are Eisenstein and 24 have Eisenstein reciprocal. Lean checks an irreducible reduction for each of the other eleven. The statements in the table therefore take no Appendix C computation as a hypothesis. The original 254 reductions at primes up to 317 are independently reproduced by the Python programs. [Eisenstein checks](ArithmeticOfJacobiPolynomials/Verification/DerivativeEisensteinData.lean) · [Frobenius certificates](ArithmeticOfJacobiPolynomials/Verification/Rabin) · [Theorem 1.5 and Corollary 6.2](ArithmeticOfJacobiPolynomials/Verification/DerivativeAll.lean) |
 | Kaneko–Zagier (Theorem 1.1 and the corresponding case of Corollary 6.6) | The inequalities in Proposition B.2 for `8333 ≤ n ≤ 250000` enter as a computational hypothesis. For `n ≤ 8332` the proof uses Cullinan–Hajir's Magma irreducibility calculation through modular index `10^5`. For `n < 10^6` it uses their Galois result conditional on irreducibility, published through modular index `10^9`. Cullinan and Hajir used PARI/GP for prime pairs and Magma for the remaining small cases. The verification programs independently check both published inputs throughout the degree ranges used here. [Proposition B.2 input](ArithmeticOfJacobiPolynomials/External.lean#L1219) · [Cullinan–Hajir, Remark 4.6 and Theorem 1.8](https://doi.org/10.1090/proc/13212) |
 | Integral parameters (Corollary 6.1) | The proof uses the cited results of Theorem 1.3, including the location of Jacobi zeros, the Jacobi discriminant, Jordan's prime-cycle theorem and Dusart's bound for the Chebyshev function. [Statements of the cited results](ArithmeticOfJacobiPolynomials/External.lean) |
-
-For the negative sign, degrees 73–81 use the second alternative of Cullinan–Hajir,
-Theorem 1.7. For example, at `n = 73` one can take `q = 47`, for which
-`2(2n+1−q)−1 = 199`. The other intervals use primes of the first kind.
-[Prime certificates](ArithmeticOfJacobiPolynomials/Verification/LegendrePrimePairs.lean)
-
-Deng's preprint gives the all-degree Legendre irreducibility theorem and the resultant comparison
-that motivated this work. The three Legendre declarations in the table of main results now
-derive irreducibility within the project. The original declarations taking
-`DengLegendreIrreducibility` as an argument remain available. Lean's `#print axioms` reports
-the logical axioms in a proof term. The external mathematical inputs can be read in the
-theorem's type. The declarations `legendreIrreducibility_of_comparison` and
-`firstDerivativeIntegerInequalities_proved` also supply the corresponding inputs to the
-original proofs. [Deng, Theorem 1.1](https://arxiv.org/abs/2609.22336v2)
-
-## Hypotheses made explicit
-
-- **Lemma 2.5.** The Vandermonde bound in the manuscript takes `k ≥ 1`. Lean writes its exponent using subtraction of natural numbers, which gives zero for `k − 1` when `k = 0`. For positive `k` the formulas agree. [IntervalVandermonde.lean](ArithmeticOfJacobiPolynomials/Analysis/IntervalVandermonde.lean#L139)
-- **Lemma C.1.** The factor-degree criterion makes the positive-degree assumption `D ≥ 1` explicit.
-  The applications in Appendix C use positive degree.
-  [FactorDegrees.lean](ArithmeticOfJacobiPolynomials/Polynomial/FactorDegrees.lean#L97)
-- **Lemma 5.11.** The cited prime-interval estimate is used for integer `x ≥ 9`. The proof takes
-  `x = 2n + 2` or `x = 2n + 4`.
-  [External.lean](ArithmeticOfJacobiPolynomials/External.lean#L556)
 
 ## Build
 
