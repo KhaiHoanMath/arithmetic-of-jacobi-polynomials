@@ -1,0 +1,12 @@
+name = "formalization"
+defaultTargets = ["ArithmeticOfJacobiPolynomials"]
+platformIndependent = true
+
+[[require]]
+name = "Stacks"
+git = "https://github.com/AxiomMath/Stacks"
+rev = "f56a316ddf7a930906d88b78d6f9a2668cffd0cf"
+
+[[lean_lib]]
+name = "ArithmeticOfJacobiPolynomials"
+leanOptions = { autoImplicit = false, weak.linter.mathlibStandardSet = true, weak.linter.style.header = false }
